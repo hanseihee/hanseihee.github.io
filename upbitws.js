@@ -17,11 +17,15 @@ function addMoreRows(name, lastPrice, change, rowid) {
   var cell1 = row.insertCell(0);
   var cell2 = row.insertCell(1);
   var cell3 = row.insertCell(2);
-  var cell3 = row.insertCell(3);
+  var cell4 = row.insertCell(3);
 
   cell1.innerHTML = name;
   cell2.innerHTML = lastPrice;
   cell3.innerHTML = change;
+
+  cell2.style.textAlign = "right";
+  cell3.style.textAlign = "right";
+  cell4.style.textAlign = "right";
 }
 
 function getCoinList() {
@@ -37,12 +41,38 @@ function getCoinList() {
           coinListArr.push(item.market);
         }
       }
+      getTicker();
       connectWebsocket();
       connectBinanceWS();
     }
   };
 
   xmlHttp.open("GET", "https://api.upbit.com/v1/market/all", true);
+  xmlHttp.send();
+}
+
+function getTicker() {
+  var xmlHttp = new XMLHttpRequest();
+
+  xmlHttp.onreadystatechange = function () {
+    if (this.status == 200 && this.readyState == this.DONE) {
+      const obj = JSON.parse(xmlHttp.responseText);
+      // console.log(obj);
+      for (let i = 0; i < obj.length; i++) {
+        // console.log(obj[i].trade_price);
+
+        obj[i]["code"] = obj[i]["market"];
+        console.log(obj[i]);
+        updateCell(obj[i]);
+      }
+    }
+  };
+
+  xmlHttp.open(
+    "GET",
+    "https://api.upbit.com/v1/ticker?markets=" + coinListArr.toString(),
+    true
+  );
   xmlHttp.send();
 }
 
@@ -77,7 +107,8 @@ function updateCell(obj) {
 
     let change =
       ((obj.trade_price - obj.prev_closing_price) / obj.trade_price) * 100;
-    cells[1].innerText = obj.trade_price;
+
+    cells[1].innerText = obj.trade_price.toLocaleString("ko-KR");
     cells[2].innerText = change.toFixed(2) + "%";
     if (change < 0) {
       cells[2].style.color = "blue";

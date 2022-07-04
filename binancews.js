@@ -1,6 +1,4 @@
 function connectBinanceWS() {
-  console.log(coinListArr);
-
   var url = "wss://stream.binance.com:9443/ws";
   for (var i = 0; i < coinListArr.length; i++) {
     let ticker =
@@ -18,7 +16,6 @@ function connectBinanceWS() {
       reader = new FileReader();
       reader.onload = () => {
         const obj = JSON.parse(reader.result);
-        console.log(obj);
       };
       reader.readAsText(event.data);
     } else {
@@ -34,8 +31,7 @@ function updateKimpCell(obj) {
   let binancePrice = obj.c * 1298.0;
 
   cells = row.getElementsByTagName("td");
-  let upbitPrice = cells[1].innerText;
-  console.log(binancePrice);
+  let upbitPrice = cells[1].innerText.replace(/,/gi, "");
   let kimp =
     (((upbitPrice - binancePrice) / upbitPrice) * 100).toFixed(2) + "%";
 
