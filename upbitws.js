@@ -3,11 +3,8 @@ window.onload = function () {
   getCoinList();
 };
 
-function refreshTable() {
-  addMoreRows("리플", "400", "+2.1%");
-}
-
 function addMoreRows(name, lastPrice, change, rowid) {
+  console.log(rowid);
   var tbodyRef = document.getElementById("tbl_coin");
 
   var table = document.getElementById("tbl_coin");
@@ -26,6 +23,10 @@ function addMoreRows(name, lastPrice, change, rowid) {
   cell2.style.textAlign = "right";
   cell3.style.textAlign = "right";
   cell4.style.textAlign = "right";
+
+  // 즐겨찾기 된것이 있으면 맨위로
+
+  // ADA
 }
 
 function getCoinList() {
@@ -44,6 +45,13 @@ function getCoinList() {
       getTicker();
       connectWebsocket();
       connectBinanceWS();
+
+      var cells = document.querySelectorAll("#tbl_coin td");
+      for (var i = 0; i < cells.length; i++) {
+        cells[i].addEventListener("click", function () {
+          console.log(this.parentElement.id);
+        });
+      }
     }
   };
 
@@ -57,12 +65,8 @@ function getTicker() {
   xmlHttp.onreadystatechange = function () {
     if (this.status == 200 && this.readyState == this.DONE) {
       const obj = JSON.parse(xmlHttp.responseText);
-      // console.log(obj);
       for (let i = 0; i < obj.length; i++) {
-        // console.log(obj[i].trade_price);
-
         obj[i]["code"] = obj[i]["market"];
-        console.log(obj[i]);
         updateCell(obj[i]);
       }
     }
