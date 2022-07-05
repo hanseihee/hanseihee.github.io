@@ -1,11 +1,12 @@
 function connectBinanceWS() {
   var url = "wss://stream.binance.com:9443/ws";
-  for (var i = 0; i < coinListArr.length; i++) {
-    let ticker =
-      "/" +
-      coinListArr[i].replace("KRW-", "").toLowerCase() +
-      "usdt@miniTicker";
+  let list = getCoinNames("KRW", "toArray");
 
+  console.log("connectBinanceWS()\n" + list);
+  for (var i = 0; i < list.length; i++) {
+    let ticker =
+      "/" + list[i].replace("KRW-", "").toLowerCase() + "usdt@miniTicker";
+    console.log(ticker);
     url = url + ticker;
   }
 
